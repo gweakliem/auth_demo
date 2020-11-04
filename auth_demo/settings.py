@@ -102,29 +102,56 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
-MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
 
 ROOT_URLCONF = 'auth_demo.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'auth_demo.wsgi.application'
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+print("Base  ", BASE_DIR)
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    os.path.join(BASE_DIR, 'auth_app/templates'),
 )
 
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            # insert your TEMPLATE_DIRS here
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                # Insert your TEMPLATE_CONTEXT_PROCESSORS here or use this
+                # list if you haven't customized them:
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                'shopify_auth.context_processors.shopify_auth',
+            ],
+        },
+    },
+]
+
 # Start off with the default context processors.
-TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS
+#TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -178,9 +205,9 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # Add the Shopify Auth context processor.
-TEMPLATE_CONTEXT_PROCESSORS += (
-    'shopify_auth.context_processors.shopify_auth',
-)
+# TEMPLATE_CONTEXT_PROCESSORS += (
+#     'shopify_auth.context_processors.shopify_auth',
+# )
 
 # Use the Shopify Auth user model.
 AUTH_USER_MODEL = 'auth_app.AuthAppShopUser'
@@ -196,10 +223,13 @@ LOGIN_REDIRECT_URL = 'auth_app.views.home'
 SHOPIFY_APP_NAME = 'Auth Demo'
 SHOPIFY_APP_API_KEY = os.environ.get('SHOPIFY_APP_API_KEY')
 SHOPIFY_APP_API_SECRET = os.environ.get('SHOPIFY_APP_API_SECRET')
-SHOPIFY_APP_API_SCOPE = ['read_products', 'read_orders']
+SHOPIFY_APP_API_SCOPE = ['read_products', 'read_orders', 'read_shipping', 'write_shipping']
 SHOPIFY_APP_IS_EMBEDDED = True
 SHOPIFY_APP_DEV_MODE = False
 
 # Set secure proxy header to allow proper detection of secure URLs behind a proxy.
 # See https://docs.djangoproject.com/en/1.7/ref/settings/#secure-proxy-ssl-header
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SAMESITE = 'Lax'
+
+LOGIN_URL='/login'

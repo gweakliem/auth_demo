@@ -1,0 +1,14 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+django-shopify-auth = "==0.9.1"
+python-dotenv = "==0.1.0"
+django = ">=3.0.2"
+
+[requires]
+python_version = "3.8"
